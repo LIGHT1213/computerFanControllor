@@ -100,6 +100,7 @@ int main(void)
   MX_TIM8_Init();
   MX_USART1_UART_Init();
   MX_ADC1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -169,7 +170,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+#if 0
 /* USER CODE END 4 */
 
 /**
@@ -200,6 +201,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+	#endif
+void Error_Handler(void)
+{
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)

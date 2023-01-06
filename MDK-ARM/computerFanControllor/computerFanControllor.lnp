@@ -39,7 +39,18 @@
 "computerfancontrollor\cmsis_os.o"
 "computerfancontrollor\heap_4.o"
 "computerfancontrollor\port.o"
---strict --scatter "computerFanControllor\computerFanControllor.sct"
+"computerfancontrollor\callback.o"
+"computerfancontrollor\fan.o"
+"computerfancontrollor\pid.o"
+"computerfancontrollor\ws2812b.o"
+"computerfancontrollor\ring_buffer.o"
+"computerfancontrollor\shell.o"
+"computerfancontrollor\shell_cmd_list.o"
+"computerfancontrollor\shell_companion.o"
+"computerfancontrollor\shell_ext.o"
+"computerfancontrollor\shell_port.o"
+"computerfancontrollor\computeruart.o"
+--library_type=microlib --strict --scatter "computerFanControllor\computerFanControllor.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "computerFanControllor.map" -o computerFanControllor\computerFanControllor.axf

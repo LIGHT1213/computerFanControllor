@@ -31,7 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "FreeRTOS.h"
+#include "task.h"
+#include "cmsis_os.h"
+#include "ring_buffer.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -46,7 +49,8 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+extern ring_buffer RB;
+extern osSemaphoreId uartSendBinarySemHandle;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -57,6 +61,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LIVE_LED_Pin GPIO_PIN_13
+#define LIVE_LED_GPIO_Port GPIOC
 #define fan7In_Pin GPIO_PIN_0
 #define fan7In_GPIO_Port GPIOA
 #define fan8In_Pin GPIO_PIN_1
