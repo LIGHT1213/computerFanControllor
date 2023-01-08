@@ -26,6 +26,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ring_buffer.h"
+#include "fan.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,6 +43,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 ring_buffer RB;
+fanControl_t fanStruct[8];
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -55,7 +58,7 @@ osSemaphoreId uartSendBinarySemHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-
+void fanStructInit();
 /* USER CODE END FunctionPrototypes */
 
 void osInitTask(void const * argument);
@@ -148,7 +151,8 @@ void osInitTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+		fanStructInit();
+    //osDelay(1);
   }
   /* USER CODE END osInitTask */
 }
@@ -166,7 +170,8 @@ void osFanControlTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+		fanControlTask();
+    osDelay(1000);
   }
   /* USER CODE END osFanControlTask */
 }
@@ -209,6 +214,77 @@ void osShellTask(void const * argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+void fanStructInit()
+{
+	fanControlInit_t fanStructInit[FAN_NUM];
+	fanStructInit[0].ctrlHtim=&htim1;
+	fanStructInit[0].ctrlTimChannel=TIM_CHANNEL_1;
+	fanStructInit[0].fanPulseNum=2;
+	fanStructInit[0].fanSpeedMax=1500;
+	fanStructInit[0].fanSpeedMin=1000;
+	fanStructInit[0].fbHtim=&htim4;
+	fanStructInit[0].fbTimChannel=TIM_CHANNEL_1;
+	
+	fanStructInit[1].ctrlHtim=&htim1;
+	fanStructInit[1].ctrlTimChannel=TIM_CHANNEL_4;
+	fanStructInit[1].fanPulseNum=2;
+	fanStructInit[1].fanSpeedMax=1500;
+	fanStructInit[1].fanSpeedMin=1000;
+	fanStructInit[1].fbHtim=&htim4;
+	fanStructInit[1].fbTimChannel=TIM_CHANNEL_2;
+	
+	fanStructInit[2].ctrlHtim=&htim2;
+	fanStructInit[2].ctrlTimChannel=TIM_CHANNEL_3;
+	fanStructInit[2].fanPulseNum=2;
+	fanStructInit[2].fanSpeedMax=1500;
+	fanStructInit[2].fanSpeedMin=1000;
+	fanStructInit[2].fbHtim=&htim2;
+	fanStructInit[2].fbTimChannel=TIM_CHANNEL_1;
 
+	fanStructInit[3].ctrlHtim=&htim2;
+	fanStructInit[3].ctrlTimChannel=TIM_CHANNEL_4;
+	fanStructInit[3].fanPulseNum=2;
+	fanStructInit[3].fanSpeedMax=1500;
+	fanStructInit[3].fanSpeedMin=1000;
+	fanStructInit[3].fbHtim=&htim2;
+	fanStructInit[3].fbTimChannel=TIM_CHANNEL_2;
+	
+	fanStructInit[4].ctrlHtim=&htim3;
+	fanStructInit[4].ctrlTimChannel=TIM_CHANNEL_3;
+	fanStructInit[4].fanPulseNum=2;
+	fanStructInit[4].fanSpeedMax=1500;
+	fanStructInit[4].fanSpeedMin=1000;
+	fanStructInit[4].fbHtim=&htim3;
+	fanStructInit[4].fbTimChannel=TIM_CHANNEL_1;
+	
+	fanStructInit[5].ctrlHtim=&htim3;
+	fanStructInit[5].ctrlTimChannel=TIM_CHANNEL_4;
+	fanStructInit[5].fanPulseNum=2;
+	fanStructInit[5].fanSpeedMax=1500;
+	fanStructInit[5].fanSpeedMin=1000;
+	fanStructInit[5].fbHtim=&htim3;
+	fanStructInit[5].fbTimChannel=TIM_CHANNEL_2;
+	
+	fanStructInit[6].ctrlHtim=&htim5;
+	fanStructInit[6].ctrlTimChannel=TIM_CHANNEL_3;
+	fanStructInit[6].fanPulseNum=2;
+	fanStructInit[6].fanSpeedMax=1500;
+	fanStructInit[6].fanSpeedMin=1000;
+	fanStructInit[6].fbHtim=&htim5;
+	fanStructInit[6].fbTimChannel=TIM_CHANNEL_1;
+	
+	fanStructInit[7].ctrlHtim=&htim5;
+	fanStructInit[7].ctrlTimChannel=TIM_CHANNEL_4;
+	fanStructInit[7].fanPulseNum=2;
+	fanStructInit[7].fanSpeedMax=1500;
+	fanStructInit[7].fanSpeedMin=1000;
+	fanStructInit[7].fbHtim=&htim5;
+	fanStructInit[7].fbTimChannel=TIM_CHANNEL_2;
+	
+	for(int i=0;i<FAN_NUM;i++)
+	{
+		uint8_t result=fanInit(fanStruct,fanStructInit);
+	}
+}
 /* USER CODE END Application */
 

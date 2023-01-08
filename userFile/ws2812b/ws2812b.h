@@ -4,7 +4,7 @@
 
 #ifndef WS2812B_H
 #include "main.h"
-#define LedTotalNumer 20
+#define LedTotalNumer 40
 #define T0H 18-1
 #define T1H 72-1
 #define WS2812_TIM htim8

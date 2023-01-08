@@ -3,7 +3,7 @@
 #include "main.h"
 #include "pid.h"
 //风扇数量
-#define FAN_NUM 2
+#define FAN_NUM 8
 
 //风扇PWM的极性，1：100%pwm满速，0：0％pwm满速
 #define PWM_MODE 1
