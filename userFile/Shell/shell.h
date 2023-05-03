@@ -13,7 +13,7 @@
 #define     __SHELL_H__
 
 #include "shell_cfg.h"
-
+ #include "FreeRTOS.h"
 #define     SHELL_VERSION               "3.1.2"                 /**< 版本号 */
 
 

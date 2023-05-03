@@ -28,6 +28,8 @@
 #include "ring_buffer.h"
 #include "fan.h"
 #include "tim.h"
+#include "shell_port.h"
+#include "shell.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -121,15 +123,15 @@ void MX_FREERTOS_Init(void) {
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
 
   /* definition and creation of fanControlTask */
-  osThreadDef(fanControlTask, osFanControlTask, osPriorityAboveNormal, 0, 256);
+  osThreadDef(fanControlTask, osFanControlTask, osPriorityNormal, 0, 256);
   fanControlTaskHandle = osThreadCreate(osThread(fanControlTask), NULL);
 
   /* definition and creation of rgbTask */
-  osThreadDef(rgbTask, osRgbTask, osPriorityAboveNormal, 0, 256);
+  osThreadDef(rgbTask, osRgbTask, osPriorityNormal, 0, 256);
   rgbTaskHandle = osThreadCreate(osThread(rgbTask), NULL);
 
   /* definition and creation of shellTask */
-  osThreadDef(shellTask, osShellTask, osPriorityIdle, 0, 128);
+  osThreadDef(shellTask, osShellTask, osPriorityNormal, 0, 256);
   shellTaskHandle = osThreadCreate(osThread(shellTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -152,7 +154,10 @@ void osInitTask(void const * argument)
   for(;;)
   {
 		fanStructInit();
-    //osDelay(1);
+		HAL_GPIO_WritePin(ESP_RST_GPIO_Port,ESP_RST_Pin,GPIO_PIN_RESET);
+		osDelay(500);
+		HAL_GPIO_WritePin(ESP_RST_GPIO_Port,ESP_RST_Pin,GPIO_PIN_SET);
+    vTaskDelete(initTaskHandle);
   }
   /* USER CODE END osInitTask */
 }
@@ -167,11 +172,14 @@ void osInitTask(void const * argument)
 void osFanControlTask(void const * argument)
 {
   /* USER CODE BEGIN osFanControlTask */
+	uint8_t xTest=0xaa;
   /* Infinite loop */
   for(;;)
   {
 		fanControlTask();
-    osDelay(1000);
+		
+
+    osDelay(200);
   }
   /* USER CODE END osFanControlTask */
 }
@@ -189,7 +197,8 @@ void osRgbTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+		HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+    osDelay(1000);
   }
   /* USER CODE END osRgbTask */
 }
@@ -205,9 +214,11 @@ void osShellTask(void const * argument)
 {
   /* USER CODE BEGIN osShellTask */
   /* Infinite loop */
+	userShellInit();
   for(;;)
   {
-    osDelay(1);
+		shellTask(&shell);
+		osDelay(30);
   }
   /* USER CODE END osShellTask */
 }
@@ -221,70 +232,47 @@ void fanStructInit()
 	fanStructInit[0].ctrlTimChannel=TIM_CHANNEL_1;
 	fanStructInit[0].fanPulseNum=2;
 	fanStructInit[0].fanSpeedMax=1500;
-	fanStructInit[0].fanSpeedMin=1000;
+	fanStructInit[0].fanSpeedMin=40;
 	fanStructInit[0].fbHtim=&htim4;
 	fanStructInit[0].fbTimChannel=TIM_CHANNEL_1;
+  fanStructInit[0].controlMode=1;
 	
 	fanStructInit[1].ctrlHtim=&htim1;
 	fanStructInit[1].ctrlTimChannel=TIM_CHANNEL_4;
 	fanStructInit[1].fanPulseNum=2;
 	fanStructInit[1].fanSpeedMax=1500;
-	fanStructInit[1].fanSpeedMin=1000;
+	fanStructInit[1].fanSpeedMin=40;
 	fanStructInit[1].fbHtim=&htim4;
 	fanStructInit[1].fbTimChannel=TIM_CHANNEL_2;
+	fanStructInit[1].controlMode=1;
+
 	
-	fanStructInit[2].ctrlHtim=&htim2;
+	fanStructInit[2].ctrlHtim=&htim5;
 	fanStructInit[2].ctrlTimChannel=TIM_CHANNEL_3;
 	fanStructInit[2].fanPulseNum=2;
 	fanStructInit[2].fanSpeedMax=1500;
-	fanStructInit[2].fanSpeedMin=1000;
+	fanStructInit[2].fanSpeedMin=40;
 	fanStructInit[2].fbHtim=&htim2;
 	fanStructInit[2].fbTimChannel=TIM_CHANNEL_1;
-
-	fanStructInit[3].ctrlHtim=&htim2;
+  fanStructInit[2].controlMode=1;
+	
+	fanStructInit[3].ctrlHtim=&htim5;
 	fanStructInit[3].ctrlTimChannel=TIM_CHANNEL_4;
 	fanStructInit[3].fanPulseNum=2;
 	fanStructInit[3].fanSpeedMax=1500;
-	fanStructInit[3].fanSpeedMin=1000;
+	fanStructInit[3].fanSpeedMin=40;
 	fanStructInit[3].fbHtim=&htim2;
 	fanStructInit[3].fbTimChannel=TIM_CHANNEL_2;
-	
-	fanStructInit[4].ctrlHtim=&htim3;
-	fanStructInit[4].ctrlTimChannel=TIM_CHANNEL_3;
-	fanStructInit[4].fanPulseNum=2;
-	fanStructInit[4].fanSpeedMax=1500;
-	fanStructInit[4].fanSpeedMin=1000;
-	fanStructInit[4].fbHtim=&htim3;
-	fanStructInit[4].fbTimChannel=TIM_CHANNEL_1;
-	
-	fanStructInit[5].ctrlHtim=&htim3;
-	fanStructInit[5].ctrlTimChannel=TIM_CHANNEL_4;
-	fanStructInit[5].fanPulseNum=2;
-	fanStructInit[5].fanSpeedMax=1500;
-	fanStructInit[5].fanSpeedMin=1000;
-	fanStructInit[5].fbHtim=&htim3;
-	fanStructInit[5].fbTimChannel=TIM_CHANNEL_2;
-	
-	fanStructInit[6].ctrlHtim=&htim5;
-	fanStructInit[6].ctrlTimChannel=TIM_CHANNEL_3;
-	fanStructInit[6].fanPulseNum=2;
-	fanStructInit[6].fanSpeedMax=1500;
-	fanStructInit[6].fanSpeedMin=1000;
-	fanStructInit[6].fbHtim=&htim5;
-	fanStructInit[6].fbTimChannel=TIM_CHANNEL_1;
-	
-	fanStructInit[7].ctrlHtim=&htim5;
-	fanStructInit[7].ctrlTimChannel=TIM_CHANNEL_4;
-	fanStructInit[7].fanPulseNum=2;
-	fanStructInit[7].fanSpeedMax=1500;
-	fanStructInit[7].fanSpeedMin=1000;
-	fanStructInit[7].fbHtim=&htim5;
-	fanStructInit[7].fbTimChannel=TIM_CHANNEL_2;
+  fanStructInit[3].controlMode=1;
 	
 	for(int i=0;i<FAN_NUM;i++)
 	{
-		uint8_t result=fanInit(fanStruct,fanStructInit);
+		uint8_t result=fanInit(fanStruct+i,fanStructInit+i);
 	}
+	HAL_TIM_Base_Start(&htim5);
+	HAL_TIM_Base_Start(&htim2);
+	HAL_TIM_IC_Start_IT(&htim2,TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim5,TIM_CHANNEL_4);
 }
 /* USER CODE END Application */
 

@@ -49,6 +49,7 @@
 "computerfancontrollor\shell_companion.o"
 "computerfancontrollor\shell_ext.o"
 "computerfancontrollor\shell_port.o"
+"computerfancontrollor\log.o"
 "computerfancontrollor\computeruart.o"
 --library_type=microlib --strict --scatter "computerFanControllor\computerFanControllor.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

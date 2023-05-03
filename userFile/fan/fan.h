@@ -3,14 +3,14 @@
 #include "main.h"
 #include "pid.h"
 //风扇数量
-#define FAN_NUM 8
+#define FAN_NUM 4
 
 //风扇PWM的极性，1：100%pwm满速，0：0％pwm满速
 #define PWM_MODE 1
 //风扇驱动死区（启动所需要的最小的PWM）------------>如果对风扇的启动速度要求极高（控制反应延迟<2*ControlCycleTime），这个值请测试并设置,
 #define MOTOR_DEAD_ZONE 0
 /* IC capture Parameters define*/
-#define        TIM_IC_FREQ                          50000 //定时器输入捕获频率     
+#define        TIM_IC_FREQ                          25000 //定时器输入捕获频率     
 #define        TIM_ICOF_MAX                         0x0a  //输入捕获溢出次数，溢出会清0频率，在这里为13.17秒。这个值和定时器频率和period值有关系
 /* 定时器捕获通道枚举定义*/
 
@@ -35,6 +35,8 @@ typedef struct
     TIM_HandleTypeDef *ctrlHtim;
     //控制所在的定时器通道
     uint8_t ctrlTimChannel;
+	
+		uint8_t controlMode;
 }fanControlInit_t;
 
 typedef struct
@@ -76,6 +78,8 @@ typedef struct
     uint32_t cap_val1;
     uint32_t cap_val2;
     uint32_t cap_sum;
+		
+		uint8_t controlMode;
     /* data */
 } fanControl_t;
 
